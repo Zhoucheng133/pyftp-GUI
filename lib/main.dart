@@ -8,7 +8,7 @@ void main() {
   runApp(MainApp());
 
   doWhenWindowReady(() {
-    const initialSize = Size(400, 500);
+    const initialSize = Size(400, 300);
     appWindow.minSize = initialSize;
     appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;
@@ -42,7 +42,15 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
 
+  void mainServer(bool value){
+    setState(() {
+      serverOn=value;
+    });
+    
+  }
+
   String path="没有选择目录";
+  bool serverOn=false;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +111,19 @@ class _MainViewState extends State<MainView> {
                   )
                 ],
               ),
+              SizedBox(height: 10,),
+              Text(
+                "启动服务",
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              SizedBox(height: 5,),
+              Switch(
+                value: serverOn, 
+                splashRadius: 0,
+                onChanged: (value)=>mainServer(value)
+              )
             ],
           ),
         )
