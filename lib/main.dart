@@ -1,4 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unnecessary_brace_in_string_interps
+
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_picker/file_picker.dart';
@@ -42,15 +45,42 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
 
-  void mainServer(bool value){
+  Future<void> mainServer(bool value) async {
+    if(path=="没有选择目录"){
+      return;
+    }
     setState(() {
       serverOn=value;
     });
-    
+    if (value == true) {
+      // 执行命令
+      Process.start('python3', ['-m', 'pyftpdlib', '-d', path])
+      .then((Process process) {
+        print('Command started with PID ${process.pid}');
+        process.stdout.transform(utf8.decoder).listen((String data) {
+          print('stdout: $data');
+        });
+        process.stderr.transform(utf8.decoder).listen((String data) {
+          print('stderr: $data');
+        });
+
+        setState(() {
+          pid=process.pid;
+        });
+
+        process.exitCode.then((int code) {
+          print('Command exited with code $code');
+        });
+      });
+    } else {
+      // 杀死命令
+      Process.killPid(pid);
+    }
   }
 
   String path="没有选择目录";
   bool serverOn=false;
+  int pid=0;
 
   @override
   Widget build(BuildContext context) {
@@ -94,8 +124,8 @@ class _MainViewState extends State<MainView> {
                     ),
                   ),
                   SizedBox(width: 10,),
-                  ElevatedButton(
-                    onPressed: () async {
+                  TextButton(
+                    onPressed: serverOn==false ? () async {
                       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
                       if (selectedDirectory != null) {
                         setState(() {
@@ -106,7 +136,7 @@ class _MainViewState extends State<MainView> {
                           path="没有选择目录";
                         });
                       }
-                    }, 
+                    } : null,
                     child: Text("选择路径")
                   )
                 ],
