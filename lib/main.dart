@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unnecessary_brace_in_string_interps
 
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:process_run/process_run.dart';
 
 void main() {
   runApp(MainApp());
@@ -52,35 +50,20 @@ class _MainViewState extends State<MainView> {
     setState(() {
       serverOn=value;
     });
+    
     if (value == true) {
-      // 执行命令
-      Process.start('python3', ['-m', 'pyftpdlib', '-d', path])
-      .then((Process process) {
-        print('Command started with PID ${process.pid}');
-        process.stdout.transform(utf8.decoder).listen((String data) {
-          print('stdout: $data');
-        });
-        process.stderr.transform(utf8.decoder).listen((String data) {
-          print('stderr: $data');
-        });
-
-        setState(() {
-          pid=process.pid;
-        });
-
-        process.exitCode.then((int code) {
-          print('Command exited with code $code');
-        });
-      });
+      try {
+        await shell.run("python3 -m pyftpdlib -d ${path}");
+      } on ShellException catch (_) {}
     } else {
-      // 杀死命令
-      Process.killPid(pid);
+      shell.kill();
     }
   }
 
   String path="没有选择目录";
   bool serverOn=false;
   int pid=0;
+  var shell = Shell();
 
   @override
   Widget build(BuildContext context) {
