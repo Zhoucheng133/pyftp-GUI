@@ -65,12 +65,6 @@ class _MainViewState extends State<MainView> {
           ],
         ),
         actions: [
-          ElevatedButton(
-            onPressed: (){
-              Navigator.pop(context);
-            }, 
-            child: Text("取消")
-          ),
           FilledButton(
             onPressed: () async {
               final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -126,7 +120,7 @@ class _MainViewState extends State<MainView> {
     
     if (value == true) {
       try {
-        await shell.run("python3 -m pyftpdlib -d ${path}");
+        await shell.run("${pythonPath.text} -m pyftpdlib -d ${path}");
       } on ShellException catch (_) {}
     } else {
       shell.kill();
@@ -157,7 +151,7 @@ class _MainViewState extends State<MainView> {
     return Column(
       children: [
         SizedBox(
-          height: 30,
+          height: 50,
           child: MoveWindow(),
         ),
         Padding(
