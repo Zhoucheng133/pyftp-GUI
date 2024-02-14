@@ -1,4 +1,4 @@
-# pyftp_gui
+# pyftp GUI
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.7-blue?logo=Flutter)
 ![shared_preferences](https://img.shields.io/badge/shared_preferences-2.2.2-red)
