@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unnecessary_brace_in_string_interps
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unnecessary_brace_in_string_interps, use_build_context_synchronously
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:process_run/process_run.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MainApp());
@@ -71,7 +72,9 @@ class _MainViewState extends State<MainView> {
             child: Text("取消")
           ),
           FilledButton(
-            onPressed: (){
+            onPressed: () async {
+              final SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setString('pythonPath', pythonPath.text);
               Navigator.pop(context);
             }, 
             child: Text("完成")
@@ -111,6 +114,20 @@ class _MainViewState extends State<MainView> {
     } else {
       shell.kill();
     }
+  }
+
+  Future<void> defaultSetttings() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? path=prefs.getString("pythonPath");
+    if(path!=null){
+      pythonPath.text=path;
+    }
+  }
+
+  @override
+  void initState() {
+    defaultSetttings();
+    super.initState();
   }
 
   String path="没有选择目录";
