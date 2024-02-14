@@ -43,6 +43,44 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
 
+  TextEditingController pythonPath=TextEditingController();
+
+  void settingView(BuildContext context){
+    showDialog(
+      context: context, 
+      builder: (context)=>AlertDialog(
+        title: Text("设置"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Python路径"),
+            TextField(
+              controller: pythonPath,
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: (){
+              Navigator.pop(context);
+            }, 
+            child: Text("取消")
+          ),
+          FilledButton(
+            onPressed: (){
+              Navigator.pop(context);
+            }, 
+            child: Text("完成")
+          )
+        ],
+      )
+    );
+  }
+
   Future<void> mainServer(bool value, BuildContext context) async {
     if(path=="没有选择目录"){
       showDialog(
@@ -156,7 +194,9 @@ class _MainViewState extends State<MainView> {
                   ),
                   Expanded(child: Container()),
                   IconButton(
-                    onPressed: (){}, 
+                    onPressed: (){
+                      settingView(context);
+                    }, 
                     icon: Icon(Icons.settings_rounded),
                   )
                 ],
