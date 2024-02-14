@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unnecessary_brace_in_string_interps, use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -135,9 +137,23 @@ class _MainViewState extends State<MainView> {
     }
   }
 
+  Future<void> getAddress() async {
+    final interfaces = await NetworkInterface.list();
+    for (final interface in interfaces) {
+      final addresses = interface.addresses;
+      final localAddresses = addresses.where((address) => !address.isLoopback && address.type.name=="IPv4");
+      for (final localAddress in localAddresses) {
+        setState(() {
+          address="${localAddress.address}:2121";
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
     defaultSetttings();
+    getAddress();
     super.initState();
   }
 
@@ -145,13 +161,14 @@ class _MainViewState extends State<MainView> {
   bool serverOn=false;
   int pid=0;
   var shell = Shell();
+  var address="";
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         SizedBox(
-          height: 50,
+          height: 40,
           child: MoveWindow(),
         ),
         Padding(
@@ -231,6 +248,23 @@ class _MainViewState extends State<MainView> {
               )
             ],
           ),
+        ),
+        SizedBox(height: 10,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.podcasts_rounded,
+              color: Colors.grey,
+            ),
+            SizedBox(width: 5,),
+            Text(
+              address,
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+          ],
         )
       ],
     );
