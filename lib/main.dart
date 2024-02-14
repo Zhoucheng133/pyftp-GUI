@@ -43,8 +43,23 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
 
-  Future<void> mainServer(bool value) async {
+  Future<void> mainServer(bool value, BuildContext context) async {
     if(path=="没有选择目录"){
+      showDialog(
+        context: context, 
+        builder: (BuildContext context)=>AlertDialog(
+          title: Text("无法启动服务"),
+          content: Text("没有选择路径"),
+          actions: [
+            FilledButton(
+              onPressed: (){
+                Navigator.pop(context);
+              }, 
+              child: Text("好的")
+            )
+          ],
+        )
+      );
       return;
     }
     setState(() {
@@ -132,10 +147,19 @@ class _MainViewState extends State<MainView> {
                 ),
               ),
               SizedBox(height: 5,),
-              Switch(
-                value: serverOn, 
-                splashRadius: 0,
-                onChanged: (value)=>mainServer(value)
+              Row(
+                children: [
+                  Switch(
+                    value: serverOn, 
+                    splashRadius: 0,
+                    onChanged: (value)=>mainServer(value, context)
+                  ),
+                  Expanded(child: Container()),
+                  IconButton(
+                    onPressed: (){}, 
+                    icon: Icon(Icons.settings_rounded),
+                  )
+                ],
               )
             ],
           ),
