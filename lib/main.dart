@@ -102,6 +102,23 @@ class _MainViewState extends State<MainView> {
         )
       );
       return;
+    }else if(pythonPath.text==""){
+      showDialog(
+        context: context, 
+        builder: (BuildContext context)=>AlertDialog(
+          title: Text("无法启动服务"),
+          content: Text("没有设置Python路径"),
+          actions: [
+            FilledButton(
+              onPressed: (){
+                Navigator.pop(context);
+              }, 
+              child: Text("好的")
+            )
+          ],
+        )
+      );
+      return;
     }
     setState(() {
       serverOn=value;
