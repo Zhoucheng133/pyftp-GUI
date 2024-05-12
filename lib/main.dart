@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:window_manager/window_manager.dart';
@@ -6,7 +8,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(300, 200),
+    size: Size(400, 300),
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
@@ -34,10 +36,44 @@ class MainApp extends StatelessWidget {
         Locale('en', 'US'),
         Locale('zh', 'CN'),
       ],
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+      home: Content(),
+    );
+  }
+}
+
+class Content extends StatefulWidget {
+  const Content({super.key});
+
+  @override
+  State<Content> createState() => _ContentState();
+}
+
+class _ContentState extends State<Content> with WindowListener {
+  @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 30,
+            child: DragToMoveArea(child: Container()),
+          ),
+          Expanded(child: Center(child: Text("hello!!"),))
+        ],
       ),
     );
   }
