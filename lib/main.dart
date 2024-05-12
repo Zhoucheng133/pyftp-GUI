@@ -13,6 +13,8 @@ Future<void> main() async {
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
+    minimumSize: Size(400, 300),
+    maximumSize: Size(400, 300),
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
@@ -27,6 +29,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -70,9 +73,23 @@ class _ContentState extends State<Content> with WindowListener {
           SizedBox(
             width: double.infinity,
             height: 30,
-            child: DragToMoveArea(child: Container()),
+            child: Row(
+              children: [
+                Expanded(child: DragToMoveArea(child: Container(),)),
+                WindowCaptionButton.minimize(
+                  onPressed: (){
+                    windowManager.minimize();
+                  },
+                ),
+                WindowCaptionButton.close(
+                  onPressed: (){
+                    windowManager.close();
+                  },
+                )
+              ],
+            ),
           ),
-          Expanded(child: Center(child: Text("hello!!"),))
+          Expanded(child: Center(child: Text("tested!"),))
         ],
       ),
     );
