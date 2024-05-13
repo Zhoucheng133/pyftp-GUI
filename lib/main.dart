@@ -268,7 +268,40 @@ class _ContentState extends State<Content> with WindowListener {
                     Text("${address}:${port.text}"),
                     Expanded(child: Container()),
                     FilledButton(
-                      onPressed: ()=>runServer(pythonPath.text, sharePath.text, port.text), 
+                      onPressed: (){
+                        if(pythonPath.text.isEmpty){
+                          showDialog(
+                            context: context, 
+                            builder: (BuildContext context)=>AlertDialog(
+                              title: Text("启动服务失败"),
+                              content: Text("没有选择Python程序地址"),
+                              actions: [
+                                FilledButton(
+                                  onPressed: ()=>Navigator.pop(context), 
+                                  child: Text("好的")
+                                )
+                              ],
+                            )
+                          );
+                        }else if(sharePath.text.isEmpty){
+                          showDialog(
+                            context: context, 
+                            builder: (BuildContext context)=>AlertDialog(
+                              title: Text("启动服务失败"),
+                              content: Text("没有选择分享目录"),
+                              actions: [
+                                FilledButton(
+                                  onPressed: ()=>Navigator.pop(context), 
+                                  child: Text("好的")
+                                )
+                              ],
+                            )
+                          );
+                        }else{
+                          runServer(pythonPath.text, sharePath.text, port.text);
+                        }
+                        
+                      }, 
                       child: Text('启动')
                     )
                   ],
