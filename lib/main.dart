@@ -1,8 +1,10 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:process_run/which.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +30,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+      ),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -56,12 +61,36 @@ class _ContentState extends State<Content> with WindowListener {
   void initState() {
     super.initState();
     windowManager.addListener(this);
+    initPython();
+    port.text="2121";
   }
 
   @override
   void dispose() {
     windowManager.removeListener(this);
     super.dispose();
+  }
+
+  void initPython(){
+    pythonPath.text=whichSync('python')??whichSync('python3')??"";
+  }
+
+  var pythonPath=TextEditingController();
+  var sharePath=TextEditingController();
+  var port=TextEditingController();
+
+  Future<void> pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      pythonPath.text=result.files.single.path!;
+    }
+  }
+
+  Future<void> pickDir() async {
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+    if(selectedDirectory!=null){
+      sharePath.text=selectedDirectory;
+    }
   }
 
   @override
@@ -89,7 +118,136 @@ class _ContentState extends State<Content> with WindowListener {
               ],
             ),
           ),
-          Expanded(child: Center(child: Text("tested!"),))
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: pythonPath,
+                        autocorrect: false,
+                        // enabled: false,
+                        enableSuggestions: false,
+                        decoration: InputDecoration(
+                          hintText: "选取Python程序地址",
+                          isCollapsed: true,
+                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 14),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                        ),
+                        style: TextStyle(
+                          fontSize: 13
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10,),
+                    FilledButton(
+                      onPressed: ()=>pickFile(), 
+                      child: Text(
+                        '选取',
+                        style: TextStyle(
+                          fontSize: 13,
+                        ),
+                      )
+                    )
+                  ],
+                ),
+                SizedBox(height: 10,),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        enabled: false,
+                        controller: sharePath,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        decoration: InputDecoration(
+                          isCollapsed: true,
+                          hintText: "选取分享的目录",
+                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                        ),
+                        style: TextStyle(
+                          fontSize: 13
+                        ),
+                      )
+                    ),
+                    SizedBox(width: 10,),
+                    FilledButton(
+                      onPressed: ()=>pickDir(), 
+                      child: Text(
+                        '选取',
+                        style: TextStyle(
+                          fontSize: 13
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 10,),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: port,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        enabled: false,
+                        decoration: InputDecoration(
+                          isCollapsed: true,
+                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                        ),
+                        style: TextStyle(
+                          fontSize: 13
+                        ),
+                      )
+                    ),
+                    SizedBox(width: 10,),
+                    IconButton(
+                      onPressed: (){
+                        int number=int.parse(port.text);
+                        number-=1;
+                        port.text=number.toString();
+                      }, 
+                      icon: Icon(Icons.remove_rounded)
+                    ),
+                    SizedBox(width: 5,),
+                    IconButton(
+                      onPressed: (){
+                        int number=int.parse(port.text);
+                        number+=1;
+                        port.text=number.toString();
+                      }, 
+                      icon: Icon(Icons.add_rounded)
+                    )
+                  ],
+                ),
+                SizedBox(height: 40,),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.podcasts_rounded,
+                    ),
+                    SizedBox(width: 5,),
+                    Text("IP地址"),
+                    Expanded(child: Container()),
+                    FilledButton(
+                      onPressed: (){}, 
+                      child: Text('启动')
+                    )
+                  ],
+                )
+              ],
+            ),
+          )
         ],
       ),
     );
