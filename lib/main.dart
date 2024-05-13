@@ -1,4 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps
+
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -63,12 +65,26 @@ class _ContentState extends State<Content> with WindowListener {
     windowManager.addListener(this);
     initPython();
     port.text="2121";
+    getAddress();
   }
 
   @override
   void dispose() {
     windowManager.removeListener(this);
     super.dispose();
+  }
+
+  Future<void> getAddress() async {
+    final interfaces = await NetworkInterface.list();
+    for (final interface in interfaces) {
+      final addresses = interface.addresses;
+      final localAddresses = addresses.where((address) => !address.isLoopback && address.type.name=="IPv4");
+      for (final localAddress in localAddresses) {
+        setState(() {
+          address=localAddress.address;
+        });
+      }
+    }
   }
 
   void initPython(){
@@ -78,6 +94,7 @@ class _ContentState extends State<Content> with WindowListener {
   var pythonPath=TextEditingController();
   var sharePath=TextEditingController();
   var port=TextEditingController();
+  var address="";
 
   Future<void> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -237,7 +254,7 @@ class _ContentState extends State<Content> with WindowListener {
                       Icons.podcasts_rounded,
                     ),
                     SizedBox(width: 5,),
-                    Text("IP地址"),
+                    Text("${address}:${port.text}"),
                     Expanded(child: Container()),
                     FilledButton(
                       onPressed: (){}, 
