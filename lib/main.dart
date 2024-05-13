@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pyftp_gui/funcs/thread.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:process_run/which.dart';
 
@@ -231,8 +232,13 @@ class _ContentState extends State<Content> with WindowListener {
                     IconButton(
                       onPressed: (){
                         int number=int.parse(port.text);
+                        if(number<=1000){
+                          return;
+                        }
                         number-=1;
-                        port.text=number.toString();
+                        setState(() {
+                          port.text=number.toString();
+                        });
                       }, 
                       icon: Icon(Icons.remove_rounded)
                     ),
@@ -240,8 +246,13 @@ class _ContentState extends State<Content> with WindowListener {
                     IconButton(
                       onPressed: (){
                         int number=int.parse(port.text);
+                        if(number>=10000){
+                          return;
+                        }
                         number+=1;
-                        port.text=number.toString();
+                        setState(() {
+                          port.text=number.toString();
+                        });
                       }, 
                       icon: Icon(Icons.add_rounded)
                     )
@@ -257,7 +268,7 @@ class _ContentState extends State<Content> with WindowListener {
                     Text("${address}:${port.text}"),
                     Expanded(child: Container()),
                     FilledButton(
-                      onPressed: (){}, 
+                      onPressed: ()=>runServer(pythonPath.text, sharePath.text, port.text), 
                       child: Text('启动')
                     )
                   ],
