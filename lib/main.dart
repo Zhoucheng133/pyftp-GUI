@@ -270,8 +270,10 @@ class _ContentState extends State<Content> with WindowListener {
                     SizedBox(width: 5,),
                     Text("${address}:${port.text}"),
                     Expanded(child: Container()),
-                    FilledButton(
-                      onPressed: (){
+                    Switch(
+                      value: running, 
+                      splashRadius: 0,
+                      onChanged: (value){
                         if(pythonPath.text.isEmpty){
                           showDialog(
                             context: context, 
@@ -313,9 +315,7 @@ class _ContentState extends State<Content> with WindowListener {
                             });
                           }
                         }
-                        
-                      }, 
-                      child: Text(running ? '停止':'启动')
+                      }
                     )
                   ],
                 )
