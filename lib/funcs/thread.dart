@@ -19,7 +19,7 @@ class MainServer{
       _process = await Process.start(cmd, [], runInShell: true);
       pid=_process?.pid;
       _process?.stderr.transform(utf8.decoder).listen((data) {
-        if(data.contains("pid")){
+        if(data.contains("pid") && data.contains(">>>") && data.contains("<<<")){
           var st=data.indexOf('pid=');
           var end=data.indexOf(' <<<');
           pythonPid=data.substring(st+4, end);
