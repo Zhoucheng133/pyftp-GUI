@@ -96,6 +96,9 @@ class _ContentState extends State<Content> with WindowListener {
   var sharePath=TextEditingController();
   var port=TextEditingController();
   var address="";
+  var running=false;
+
+  var mainThread=MainServer();
 
   Future<void> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -163,7 +166,7 @@ class _ContentState extends State<Content> with WindowListener {
                     ),
                     SizedBox(width: 10,),
                     FilledButton(
-                      onPressed: ()=>pickFile(), 
+                      onPressed: running ? null : ()=>pickFile(), 
                       child: Text(
                         '选取',
                         style: TextStyle(
@@ -197,7 +200,7 @@ class _ContentState extends State<Content> with WindowListener {
                     ),
                     SizedBox(width: 10,),
                     FilledButton(
-                      onPressed: ()=>pickDir(), 
+                      onPressed: running ? null : ()=>pickDir(), 
                       child: Text(
                         '选取',
                         style: TextStyle(
@@ -230,7 +233,7 @@ class _ContentState extends State<Content> with WindowListener {
                     ),
                     SizedBox(width: 10,),
                     IconButton(
-                      onPressed: (){
+                      onPressed: running ? null : (){
                         int number=int.parse(port.text);
                         if(number<=1000){
                           return;
@@ -244,7 +247,7 @@ class _ContentState extends State<Content> with WindowListener {
                     ),
                     SizedBox(width: 5,),
                     IconButton(
-                      onPressed: (){
+                      onPressed: running ? null : (){
                         int number=int.parse(port.text);
                         if(number>=10000){
                           return;
@@ -298,11 +301,21 @@ class _ContentState extends State<Content> with WindowListener {
                             )
                           );
                         }else{
-                          runServer(pythonPath.text, sharePath.text, port.text);
+                          if(running){
+                            mainThread.stopCmd();
+                            setState(() {
+                              running=false;
+                            });
+                          }else{
+                            mainThread.runCmd(pythonPath.text, sharePath.text, port.text);
+                            setState(() {
+                              running=true;
+                            });
+                          }
                         }
                         
                       }, 
-                      child: Text('启动')
+                      child: Text(running ? '停止':'启动')
                     )
                   ],
                 )
