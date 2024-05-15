@@ -9,12 +9,8 @@ class MainServer{
   var pid;
   var pythonPid;
 
-  void runCmd(String pythonPath, String sharePah, String port) async {
-    // try{
-    //   shell.run('${pythonPath} -m pyftpdlib -p ${port} -d ${sharePah}');
-    // } on ShellException catch (_) {}
+  void runCmd(String pythonPath, String sharePah, String port, bool enableWrite, bool useLogin, String username, String password) async {
     var cmd="${pythonPath} -m pyftpdlib -p ${port} -d ${sharePah}";
-    // print(cmd);
     try {
       _process = await Process.start(cmd, [], runInShell: true);
       pid=_process?.pid;

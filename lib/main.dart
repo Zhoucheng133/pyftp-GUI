@@ -469,7 +469,7 @@ class _ContentState extends State<Content> with WindowListener {
                               running=false;
                             });
                           }else{
-                            mainThread.runCmd(pythonPath.text, sharePath.text, port.text);
+                            mainThread.runCmd(pythonPath.text, sharePath.text, port.text, write, useLogin, username.text, password.text);
                             setState(() {
                               running=true;
                             });
