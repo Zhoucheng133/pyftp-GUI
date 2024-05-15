@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -99,6 +100,9 @@ class _ContentState extends State<Content> with WindowListener {
   var address="";
   var running=false;
   var write=false;
+  var useLogin=false;
+  var username=TextEditingController();
+  var password=TextEditingController();
 
   var mainThread=MainServer();
 
@@ -114,6 +118,92 @@ class _ContentState extends State<Content> with WindowListener {
     if(selectedDirectory!=null){
       sharePath.text=selectedDirectory;
     }
+  }
+
+  void showUserDialog(BuildContext context){
+    showDialog(
+      context: context, 
+      builder: (BuildContext context)=>AlertDialog(
+        title: Text('用户设置'),
+        content: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Checkbox(
+                      splashRadius: 0,
+                      value: useLogin, 
+                      onChanged: (value){
+                        setState(() {
+                          useLogin=value!;
+                        });
+                      }
+                    ),
+                    SizedBox(width: 5,),
+                    GestureDetector(
+                      onTap: (){
+                        setState((){
+                          useLogin=!useLogin;
+                        });
+                      },
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Text('登录以访问')
+                      )
+                    )
+                  ],
+                ),
+                SizedBox(height: 5,),
+                TextField(
+                  controller: username,
+                  autocorrect: false,
+                  enabled: useLogin,
+                  enableSuggestions: false,
+                  decoration: InputDecoration(
+                    hintText: "用户名",
+                    isCollapsed: true,
+                    contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )
+                  ),
+                  style: TextStyle(
+                    fontSize: 13
+                  ),
+                ),
+                SizedBox(height: 10,),
+                TextField(
+                  controller: password,
+                  enabled: useLogin,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: "密码",
+                    isCollapsed: true,
+                    contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )
+                  ),
+                  style: TextStyle(
+                    fontSize: 13
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        actions: [
+          FilledButton(
+            onPressed: ()=>Navigator.pop(context), 
+            child: Text('完成')
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -319,7 +409,7 @@ class _ContentState extends State<Content> with WindowListener {
                     Expanded(child: Container()),
                     ElevatedButton(
                       onPressed: (){
-
+                        showUserDialog(context);
                       }, 
                       child: Row(
                         children: [
