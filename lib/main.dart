@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pyftp_gui/funcs/thread.dart';
 import 'package:window_manager/window_manager.dart';
@@ -13,13 +14,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(400, 300),
+    size: Size(400, 470),
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
-    minimumSize: Size(400, 300),
-    maximumSize: Size(400, 300),
+    minimumSize: Size(400, 470),
+    maximumSize: Size(400, 470),
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
@@ -97,6 +98,7 @@ class _ContentState extends State<Content> with WindowListener {
   var port=TextEditingController();
   var address="";
   var running=false;
+  var write=false;
 
   var mainThread=MainServer();
 
@@ -140,16 +142,24 @@ class _ContentState extends State<Content> with WindowListener {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  "Python 程序路径",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 10,),
                 Row(
                   children: [
                     Expanded(
                       child: TextField(
                         controller: pythonPath,
                         autocorrect: false,
-                        // enabled: false,
+                        enabled: !running,
                         enableSuggestions: false,
                         decoration: InputDecoration(
                           hintText: "选取Python程序地址",
@@ -175,6 +185,13 @@ class _ContentState extends State<Content> with WindowListener {
                       )
                     )
                   ],
+                ),
+                SizedBox(height: 10,),
+                Text(
+                  "分享的目录",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
                 ),
                 SizedBox(height: 10,),
                 Row(
@@ -209,6 +226,13 @@ class _ContentState extends State<Content> with WindowListener {
                       ),
                     )
                   ],
+                ),
+                SizedBox(height: 10,),
+                Text(
+                  "FTP 服务端口号",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
                 ),
                 SizedBox(height: 10,),
                 Row(
@@ -258,6 +282,52 @@ class _ContentState extends State<Content> with WindowListener {
                         });
                       }, 
                       icon: Icon(Icons.add_rounded)
+                    )
+                  ],
+                ),
+                SizedBox(height: 10,),
+                Text(
+                  "使用访问权限",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 10,),
+                Row(
+                  children: [
+                    Checkbox(
+                      splashRadius: 0,
+                      value: write, 
+                      onChanged: (value){
+                        setState(() {
+                          write=value!;
+                        });
+                      }
+                    ),
+                    SizedBox(width: 5,),
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          write=!write;
+                        });
+                      },
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Text("允许写入")
+                      )
+                    ),
+                    Expanded(child: Container()),
+                    ElevatedButton(
+                      onPressed: (){
+
+                      }, 
+                      child: Row(
+                        children: [
+                          Icon(Icons.settings_rounded),
+                          SizedBox(width: 5,),
+                          Text("用户设置")
+                        ],
+                      )
                     )
                   ],
                 ),
