@@ -388,7 +388,7 @@ class _ContentState extends State<Content> with WindowListener {
                     Checkbox(
                       splashRadius: 0,
                       value: write, 
-                      onChanged: (value){
+                      onChanged: running ? null : (value){
                         setState(() {
                           write=value!;
                         });
@@ -397,18 +397,26 @@ class _ContentState extends State<Content> with WindowListener {
                     SizedBox(width: 5,),
                     GestureDetector(
                       onTap: (){
+                        if(running){
+                          return;
+                        }
                         setState(() {
                           write=!write;
                         });
                       },
                       child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: Text("允许写入")
+                        cursor: running ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+                        child: Text(
+                          "允许写入",
+                          style: TextStyle(
+                            color: running ? Colors.grey[400] :Colors.black
+                          ),
+                        )
                       )
                     ),
                     Expanded(child: Container()),
                     ElevatedButton(
-                      onPressed: (){
+                      onPressed: running ? null: (){
                         showUserDialog(context);
                       }, 
                       child: Row(
