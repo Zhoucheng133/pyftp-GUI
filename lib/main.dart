@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps, use_build_context_synchronously
 
 import 'dart:io';
 
@@ -67,6 +67,37 @@ class _ContentState extends State<Content> with WindowListener {
     initPython();
     port.text="2121";
     getAddress();
+    _init();
+  }
+
+  void _init() async {
+    // 添加此行以覆盖默认关闭处理程序
+    await windowManager.setPreventClose(true);
+    setState(() {});
+  }
+
+  @override
+  void onWindowClose() async {
+    bool isPreventClose = await windowManager.isPreventClose();
+    if (isPreventClose) {
+      if(running){
+        showDialog(
+          context: context, 
+          builder: (BuildContext context)=>AlertDialog(
+            title: Text('服务在运行中'),
+            content: Text('你需要先关闭服务才能退出'),
+            actions: [
+              FilledButton(
+                onPressed: ()=>Navigator.pop(context), 
+                child: Text('好的')
+              )
+            ],
+          )
+        );
+      }else{
+        await windowManager.destroy();
+      }
+    }
   }
 
   @override
