@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pyftp_gui/funcs/thread.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:process_run/which.dart';
 
@@ -119,8 +120,51 @@ class _ContentState extends State<Content> with WindowListener {
     }
   }
 
-  void initPython(){
+  Future<void> initPython() async {
     pythonPath.text=whichSync('python')??whichSync('python3')??"";
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? writeGet = prefs.getBool('write');
+    if(writeGet!=null){
+      setState(() {
+        write=writeGet;
+      });
+    }
+    final String? pythonGet = prefs.getString('python');
+    if(pythonGet!=null){
+      setState(() {
+        pythonPath.text=pythonGet;
+      });
+    }
+    final String? sharePathGet = prefs.getString('sharePath');
+    if(sharePathGet!=null){
+      setState(() {
+        sharePath.text=sharePathGet;
+      });
+    }
+    final String? portGet = prefs.getString('port');
+    if(portGet!=null){
+      setState(() {
+        port.text=portGet;
+      });
+    }
+    final bool? useLoginGet = prefs.getBool('useLogin');
+    if(useLoginGet!=null){
+      setState(() {
+        useLogin=useLoginGet;
+      });
+    }
+    final String? usernameGet = prefs.getString('username');
+    if(usernameGet!=null){
+      setState(() {
+        username.text=usernameGet;
+      });
+    }
+    final String? passwordGet = prefs.getString('password');
+    if(passwordGet!=null){
+      setState(() {
+        password.text=passwordGet;
+      });
+    }
   }
 
   var pythonPath=TextEditingController();
@@ -470,7 +514,7 @@ class _ContentState extends State<Content> with WindowListener {
                     Switch(
                       value: running, 
                       splashRadius: 0,
-                      onChanged: (value){
+                      onChanged: (value) async {
                         if(pythonPath.text.isEmpty){
                           showDialog(
                             context: context, 
@@ -510,6 +554,14 @@ class _ContentState extends State<Content> with WindowListener {
                             setState(() {
                               running=true;
                             });
+                            final SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.setBool('write', write);
+                            await prefs.setString('python', pythonPath.text);
+                            await prefs.setString('sharePath', sharePath.text);
+                            await prefs.setString('port', port.text);
+                            await prefs.setBool('useLogin', useLogin);
+                            await prefs.setString('username', username.text);
+                            await prefs.setString('password', password.text);
                           }
                         }
                       }
