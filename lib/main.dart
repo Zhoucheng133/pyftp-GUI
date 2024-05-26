@@ -14,13 +14,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(400, 470),
+    size: Size(400, 400),
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
-    minimumSize: Size(400, 470),
-    maximumSize: Size(400, 470),
+    minimumSize: Size(400, 400),
+    maximumSize: Size(400, 400),
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
@@ -121,18 +121,31 @@ class _ContentState extends State<Content> with WindowListener {
   }
 
   Future<void> initPython() async {
-    pythonPath.text=whichSync('python')??whichSync('python3')??"";
+    pythonPath=whichSync('python')??whichSync('python3')??"";
+    if(pythonPath==''){
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context, 
+          builder: (BuildContext context)=>AlertDialog(
+            title: Text('没有找到Python'),
+            content: Text('可能是因为没有配置环境变量，务必确认Python加入到系统的环境变量中'),
+            actions: [
+              ElevatedButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                }, 
+                child: Text('好的')
+              )
+            ],
+          )
+        );
+      });
+    }
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? writeGet = prefs.getBool('write');
     if(writeGet!=null){
       setState(() {
         write=writeGet;
-      });
-    }
-    final String? pythonGet = prefs.getString('python');
-    if(pythonGet!=null){
-      setState(() {
-        pythonPath.text=pythonGet;
       });
     }
     final String? sharePathGet = prefs.getString('sharePath');
@@ -167,7 +180,7 @@ class _ContentState extends State<Content> with WindowListener {
     }
   }
 
-  var pythonPath=TextEditingController();
+  var pythonPath='';
   var sharePath=TextEditingController();
   var port=TextEditingController();
   var address="";
@@ -178,13 +191,6 @@ class _ContentState extends State<Content> with WindowListener {
   var password=TextEditingController();
 
   var mainThread=MainServer();
-
-  Future<void> pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      pythonPath.text=result.files.single.path!;
-    }
-  }
 
   Future<void> pickDir() async {
     String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
@@ -309,47 +315,6 @@ class _ContentState extends State<Content> with WindowListener {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Python 程序路径",
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: pythonPath,
-                        autocorrect: false,
-                        enabled: !running,
-                        enableSuggestions: false,
-                        decoration: InputDecoration(
-                          hintText: "选取Python程序地址",
-                          isCollapsed: true,
-                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 14),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          )
-                        ),
-                        style: TextStyle(
-                          fontSize: 13
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10,),
-                    FilledButton(
-                      onPressed: running ? null : ()=>pickFile(), 
-                      child: Text(
-                        '选取',
-                        style: TextStyle(
-                          fontSize: 13,
-                        ),
-                      )
-                    )
-                  ],
-                ),
-                SizedBox(height: 10,),
                 Text(
                   "分享的目录",
                   style: TextStyle(
@@ -515,12 +480,12 @@ class _ContentState extends State<Content> with WindowListener {
                       value: running, 
                       splashRadius: 0,
                       onChanged: (value) async {
-                        if(pythonPath.text.isEmpty){
+                        if(pythonPath==''){
                           showDialog(
                             context: context, 
                             builder: (BuildContext context)=>AlertDialog(
                               title: Text("启动服务失败"),
-                              content: Text("没有选择Python程序地址"),
+                              content: Text("Python环境变量没有配置"),
                               actions: [
                                 FilledButton(
                                   onPressed: ()=>Navigator.pop(context), 
@@ -550,13 +515,12 @@ class _ContentState extends State<Content> with WindowListener {
                               running=false;
                             });
                           }else{
-                            mainThread.runCmd(pythonPath.text, sharePath.text, port.text, write, useLogin, username.text, password.text);
+                            mainThread.runCmd(sharePath.text, port.text, write, useLogin, username.text, password.text);
                             setState(() {
                               running=true;
                             });
                             final SharedPreferences prefs = await SharedPreferences.getInstance();
                             await prefs.setBool('write', write);
-                            await prefs.setString('python', pythonPath.text);
                             await prefs.setString('sharePath', sharePath.text);
                             await prefs.setString('port', port.text);
                             await prefs.setBool('useLogin', useLogin);
