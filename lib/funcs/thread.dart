@@ -10,7 +10,7 @@ class MainServer{
   var pythonPid;
 
   void runCmd(String pythonPath, String sharePah, String port, bool enableWrite, bool useLogin, String username, String password) async {
-    var cmd="${pythonPath} -m pyftpdlib -p ${port} -d ${sharePah}${enableWrite?' -w':''}${useLogin?' -u $username -P $password':''}";
+    var cmd="python -m pyftpdlib -p ${port} -d ${sharePah}${enableWrite?' -w':''}${useLogin?' -u $username -P $password':''}";
     try {
       _process = await Process.start(cmd, [], runInShell: true);
       pid=_process?.pid;
@@ -19,7 +19,6 @@ class MainServer{
           var st=data.indexOf('pid=');
           var end=data.indexOf(' <<<');
           pythonPid=data.substring(st+4, end);
-          // print("pid=${pythonPid}");
         }
       }, onError: (_){});
     } catch (_) {}
