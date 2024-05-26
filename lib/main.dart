@@ -116,6 +116,7 @@ class _ContentState extends State<Content> with WindowListener {
         setState(() {
           address=localAddress.address;
         });
+        return;
       }
     }
   }
