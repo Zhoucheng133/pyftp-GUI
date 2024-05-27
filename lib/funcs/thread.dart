@@ -10,7 +10,7 @@ class MainServer{
   var pythonPid;
 
   void runCmd(String sharePah, String port, bool enableWrite, bool useLogin, String username, String password) async {
-    var cmd="python -m pyftpdlib -p ${port} -d ${sharePah}${enableWrite?' -w':''}${useLogin?' -u $username -P $password':''}";
+    var cmd="${Platform.isWindows ? 'python' : 'python3' } -m pyftpdlib -p ${port} -d ${sharePah}${enableWrite?' -w':''}${useLogin?' -u $username -P $password':''}";
     try {
       _process = await Process.start(cmd, [], runInShell: true);
       pid=_process?.pid;
