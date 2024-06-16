@@ -516,6 +516,25 @@ class _ContentState extends State<Content> with WindowListener {
                               running=false;
                             });
                           }else{
+                            Directory dir=Directory(sharePath.text);
+                            if(!dir.existsSync()){
+                              await showDialog(
+                                context: context, 
+                                builder: (BuildContext context)=>AlertDialog(
+                                  title: Text('启动失败'),
+                                  content: Text('路径不合法，重新选择'),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: (){
+                                        Navigator.pop(context);
+                                      }, 
+                                      child: Text('好的')
+                                    )
+                                  ],
+                                )
+                              );
+                              return;
+                            }
                             mainThread.runCmd(sharePath.text, port.text, write, useLogin, username.text, password.text);
                             setState(() {
                               running=true;
