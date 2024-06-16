@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
 
@@ -39,16 +39,16 @@ class MainApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
       ),
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      supportedLocales: [
+      supportedLocales: const [
         Locale('en', 'US'),
         Locale('zh', 'CN'),
       ],
-      home: Content(),
+      home: const Content(),
     );
   }
 }
@@ -85,12 +85,12 @@ class _ContentState extends State<Content> with WindowListener {
         showDialog(
           context: context, 
           builder: (BuildContext context)=>AlertDialog(
-            title: Text('服务在运行中'),
-            content: Text('你需要先关闭服务才能退出'),
+            title: const Text('服务在运行中'),
+            content: const Text('你需要先关闭服务才能退出'),
             actions: [
               FilledButton(
                 onPressed: ()=>Navigator.pop(context), 
-                child: Text('好的')
+                child: const Text('好的')
               )
             ],
           )
@@ -128,14 +128,14 @@ class _ContentState extends State<Content> with WindowListener {
         showDialog(
           context: context, 
           builder: (BuildContext context)=>AlertDialog(
-            title: Text('没有找到Python'),
-            content: Text('可能是因为没有配置环境变量，务必确认Python加入到系统的环境变量中'),
+            title: const Text('没有找到Python'),
+            content: const Text('可能是因为没有配置环境变量，务必确认Python加入到系统的环境变量中'),
             actions: [
               ElevatedButton(
                 onPressed: (){
                   Navigator.pop(context);
                 }, 
-                child: Text('好的')
+                child: const Text('好的')
               )
             ],
           )
@@ -204,7 +204,7 @@ class _ContentState extends State<Content> with WindowListener {
     showDialog(
       context: context, 
       builder: (BuildContext context)=>AlertDialog(
-        title: Text('用户设置'),
+        title: const Text('用户设置'),
         content: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Column(
@@ -221,21 +221,21 @@ class _ContentState extends State<Content> with WindowListener {
                         });
                       }
                     ),
-                    SizedBox(width: 5,),
+                    const SizedBox(width: 5,),
                     GestureDetector(
                       onTap: (){
                         setState((){
                           useLogin=!useLogin;
                         });
                       },
-                      child: MouseRegion(
+                      child: const MouseRegion(
                         cursor: SystemMouseCursors.click,
                         child: Text('登录以访问')
                       )
                     )
                   ],
                 ),
-                SizedBox(height: 5,),
+                const SizedBox(height: 5,),
                 TextField(
                   controller: username,
                   autocorrect: false,
@@ -249,11 +249,11 @@ class _ContentState extends State<Content> with WindowListener {
                       borderRadius: BorderRadius.circular(10),
                     )
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13
                   ),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 TextField(
                   controller: password,
                   enabled: useLogin,
@@ -268,7 +268,7 @@ class _ContentState extends State<Content> with WindowListener {
                       borderRadius: BorderRadius.circular(10),
                     )
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13
                   ),
                 ),
@@ -279,7 +279,7 @@ class _ContentState extends State<Content> with WindowListener {
         actions: [
           FilledButton(
             onPressed: ()=>Navigator.pop(context), 
-            child: Text('完成')
+            child: const Text('完成')
           )
         ],
       ),
@@ -316,13 +316,13 @@ class _ContentState extends State<Content> with WindowListener {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "分享的目录",
                   style: TextStyle(
                     fontSize: 14,
                   ),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Row(
                   children: [
                     Expanded(
@@ -339,15 +339,15 @@ class _ContentState extends State<Content> with WindowListener {
                             borderRadius: BorderRadius.circular(10),
                           )
                         ),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13
                         ),
                       )
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     FilledButton(
                       onPressed: running ? null : ()=>pickDir(), 
-                      child: Text(
+                      child: const Text(
                         '选取',
                         style: TextStyle(
                           fontSize: 13
@@ -356,14 +356,14 @@ class _ContentState extends State<Content> with WindowListener {
                     )
                   ],
                 ),
-                SizedBox(height: 10,),
-                Text(
+                const SizedBox(height: 10,),
+                const Text(
                   "FTP 服务端口号",
                   style: TextStyle(
                     fontSize: 14,
                   ),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Row(
                   children: [
                     Expanded(
@@ -379,12 +379,12 @@ class _ContentState extends State<Content> with WindowListener {
                             borderRadius: BorderRadius.circular(10),
                           )
                         ),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13
                         ),
                       )
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     IconButton(
                       onPressed: running ? null : (){
                         int number=int.parse(port.text);
@@ -396,9 +396,9 @@ class _ContentState extends State<Content> with WindowListener {
                           port.text=number.toString();
                         });
                       }, 
-                      icon: Icon(Icons.remove_rounded)
+                      icon: const Icon(Icons.remove_rounded)
                     ),
-                    SizedBox(width: 5,),
+                    const SizedBox(width: 5,),
                     IconButton(
                       onPressed: running ? null : (){
                         int number=int.parse(port.text);
@@ -410,18 +410,18 @@ class _ContentState extends State<Content> with WindowListener {
                           port.text=number.toString();
                         });
                       }, 
-                      icon: Icon(Icons.add_rounded)
+                      icon: const Icon(Icons.add_rounded)
                     )
                   ],
                 ),
-                SizedBox(height: 10,),
-                Text(
+                const SizedBox(height: 10,),
+                const Text(
                   "使用访问权限",
                   style: TextStyle(
                     fontSize: 14,
                   ),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Row(
                   children: [
                     Checkbox(
@@ -433,7 +433,7 @@ class _ContentState extends State<Content> with WindowListener {
                         });
                       }
                     ),
-                    SizedBox(width: 5,),
+                    const SizedBox(width: 5,),
                     GestureDetector(
                       onTap: (){
                         if(running){
@@ -458,7 +458,7 @@ class _ContentState extends State<Content> with WindowListener {
                       onPressed: running ? null: (){
                         showUserDialog(context);
                       }, 
-                      child: Row(
+                      child: const Row(
                         children: [
                           Icon(Icons.settings_rounded),
                           SizedBox(width: 5,),
@@ -468,13 +468,13 @@ class _ContentState extends State<Content> with WindowListener {
                     )
                   ],
                 ),
-                SizedBox(height: 40,),
+                const SizedBox(height: 40,),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.podcasts_rounded,
                     ),
-                    SizedBox(width: 5,),
+                    const SizedBox(width: 5,),
                     Text("${address}:${port.text}"),
                     Expanded(child: Container()),
                     Switch(
@@ -485,12 +485,12 @@ class _ContentState extends State<Content> with WindowListener {
                           showDialog(
                             context: context, 
                             builder: (BuildContext context)=>AlertDialog(
-                              title: Text("启动服务失败"),
-                              content: Text("Python环境变量没有配置"),
+                              title: const Text("启动服务失败"),
+                              content: const Text("Python环境变量没有配置"),
                               actions: [
                                 FilledButton(
                                   onPressed: ()=>Navigator.pop(context), 
-                                  child: Text("好的")
+                                  child: const Text("好的")
                                 )
                               ],
                             )
@@ -499,12 +499,12 @@ class _ContentState extends State<Content> with WindowListener {
                           showDialog(
                             context: context, 
                             builder: (BuildContext context)=>AlertDialog(
-                              title: Text("启动服务失败"),
-                              content: Text("没有选择分享目录"),
+                              title: const Text("启动服务失败"),
+                              content: const Text("没有选择分享目录"),
                               actions: [
                                 FilledButton(
                                   onPressed: ()=>Navigator.pop(context), 
-                                  child: Text("好的")
+                                  child: const Text("好的")
                                 )
                               ],
                             )
@@ -521,14 +521,14 @@ class _ContentState extends State<Content> with WindowListener {
                               await showDialog(
                                 context: context, 
                                 builder: (BuildContext context)=>AlertDialog(
-                                  title: Text('启动失败'),
-                                  content: Text('路径不合法，重新选择'),
+                                  title: const Text('启动失败'),
+                                  content: const Text('路径不合法，重新选择'),
                                   actions: [
                                     ElevatedButton(
                                       onPressed: (){
                                         Navigator.pop(context);
                                       }, 
-                                      child: Text('好的')
+                                      child: const Text('好的')
                                     )
                                   ],
                                 )
