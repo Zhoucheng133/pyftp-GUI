@@ -5,6 +5,7 @@
 ![window_manager](https://img.shields.io/badge/window_manager-0.3.8-pink)
 ![flutter_launcher_icons](https://img.shields.io/badge/flutter_launcher_icons-0.13.1-yellow)
 ![process_run](https://img.shields.io/badge/flutter_launcher_icons-0.14.2-purple)
+![google_fonts](https://img.shields.io/badge/google_fonts-6.2.1-red)
 
 ## 截图
 
