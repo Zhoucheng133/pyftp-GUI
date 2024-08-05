@@ -22,6 +22,7 @@ Future<void> main() async {
     titleBarStyle: TitleBarStyle.hidden,
     minimumSize: Size(400, 400),
     maximumSize: Size(400, 400),
+    title: 'ptftp GUI'
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
