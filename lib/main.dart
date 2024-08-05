@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pyftp_gui/funcs/thread.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
@@ -36,7 +37,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        textTheme: GoogleFonts.notoSansScTextTheme(),
+        splashColor: Colors.transparent,
       ),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
@@ -475,80 +478,83 @@ class _ContentState extends State<Content> with WindowListener {
                       Icons.podcasts_rounded,
                     ),
                     const SizedBox(width: 5,),
-                    Text("${address}:${port.text}"),
+                    Text("$address:${port.text}"),
                     Expanded(child: Container()),
-                    Switch(
-                      value: running, 
-                      splashRadius: 0,
-                      onChanged: (value) async {
-                        if(pythonPath==''){
-                          showDialog(
-                            context: context, 
-                            builder: (BuildContext context)=>AlertDialog(
-                              title: const Text("启动服务失败"),
-                              content: const Text("Python环境变量没有配置"),
-                              actions: [
-                                FilledButton(
-                                  onPressed: ()=>Navigator.pop(context), 
-                                  child: const Text("好的")
-                                )
-                              ],
-                            )
-                          );
-                        }else if(sharePath.text.isEmpty){
-                          showDialog(
-                            context: context, 
-                            builder: (BuildContext context)=>AlertDialog(
-                              title: const Text("启动服务失败"),
-                              content: const Text("没有选择分享目录"),
-                              actions: [
-                                FilledButton(
-                                  onPressed: ()=>Navigator.pop(context), 
-                                  child: const Text("好的")
-                                )
-                              ],
-                            )
-                          );
-                        }else{
-                          if(running){
-                            mainThread.stopCmd();
-                            setState(() {
-                              running=false;
-                            });
+                    Transform.scale(
+                      scale: 0.8,
+                      child: Switch(
+                        value: running, 
+                        splashRadius: 0,
+                        onChanged: (value) async {
+                          if(pythonPath==''){
+                            showDialog(
+                              context: context, 
+                              builder: (BuildContext context)=>AlertDialog(
+                                title: const Text("启动服务失败"),
+                                content: const Text("Python环境变量没有配置"),
+                                actions: [
+                                  FilledButton(
+                                    onPressed: ()=>Navigator.pop(context), 
+                                    child: const Text("好的")
+                                  )
+                                ],
+                              )
+                            );
+                          }else if(sharePath.text.isEmpty){
+                            showDialog(
+                              context: context, 
+                              builder: (BuildContext context)=>AlertDialog(
+                                title: const Text("启动服务失败"),
+                                content: const Text("没有选择分享目录"),
+                                actions: [
+                                  FilledButton(
+                                    onPressed: ()=>Navigator.pop(context), 
+                                    child: const Text("好的")
+                                  )
+                                ],
+                              )
+                            );
                           }else{
-                            Directory dir=Directory(sharePath.text);
-                            if(!dir.existsSync()){
-                              await showDialog(
-                                context: context, 
-                                builder: (BuildContext context)=>AlertDialog(
-                                  title: const Text('启动失败'),
-                                  content: const Text('路径不合法，重新选择'),
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: (){
-                                        Navigator.pop(context);
-                                      }, 
-                                      child: const Text('好的')
-                                    )
-                                  ],
-                                )
-                              );
-                              return;
+                            if(running){
+                              mainThread.stopCmd();
+                              setState(() {
+                                running=false;
+                              });
+                            }else{
+                              Directory dir=Directory(sharePath.text);
+                              if(!dir.existsSync()){
+                                await showDialog(
+                                  context: context, 
+                                  builder: (BuildContext context)=>AlertDialog(
+                                    title: const Text('启动失败'),
+                                    content: const Text('路径不合法，重新选择'),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                        }, 
+                                        child: const Text('好的')
+                                      )
+                                    ],
+                                  )
+                                );
+                                return;
+                              }
+                              mainThread.runCmd(sharePath.text, port.text, write, useLogin, username.text, password.text);
+                              setState(() {
+                                running=true;
+                              });
+                              final SharedPreferences prefs = await SharedPreferences.getInstance();
+                              await prefs.setBool('write', write);
+                              await prefs.setString('sharePath', sharePath.text);
+                              await prefs.setString('port', port.text);
+                              await prefs.setBool('useLogin', useLogin);
+                              await prefs.setString('username', username.text);
+                              await prefs.setString('password', password.text);
                             }
-                            mainThread.runCmd(sharePath.text, port.text, write, useLogin, username.text, password.text);
-                            setState(() {
-                              running=true;
-                            });
-                            final SharedPreferences prefs = await SharedPreferences.getInstance();
-                            await prefs.setBool('write', write);
-                            await prefs.setString('sharePath', sharePath.text);
-                            await prefs.setString('port', port.text);
-                            await prefs.setBool('useLogin', useLogin);
-                            await prefs.setString('username', username.text);
-                            await prefs.setString('password', password.text);
                           }
                         }
-                      }
+                      ),
                     )
                   ],
                 )
