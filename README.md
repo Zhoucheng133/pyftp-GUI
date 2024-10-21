@@ -1,11 +1,12 @@
 # pyftp GUI
 
-![Flutter](https://img.shields.io/badge/Flutter-3.19-blue?logo=Flutter)
-![file_picker](https://img.shields.io/badge/file_picker-8.0.3-green)
-![window_manager](https://img.shields.io/badge/window_manager-0.3.8-pink)
-![flutter_launcher_icons](https://img.shields.io/badge/flutter_launcher_icons-0.13.1-yellow)
-![process_run](https://img.shields.io/badge/flutter_launcher_icons-0.14.2-purple)
-![google_fonts](https://img.shields.io/badge/google_fonts-6.2.1-red)
+<img src="assets/icon.png" width=100 />
+
+![License](https://img.shields.io/badge/License-MIT-dark_green)
+
+## 简介
+
+pyftpdlib的GUI程序
 
 ## 截图
 
@@ -13,8 +14,8 @@
 
 ## 使用方法
 
-**不要在运行服务的过程中直接关闭软件!!!**  
-**在停止服务之后再关闭软件!!!**
+> [!WARNING]
+> 不要在运行服务过程中强行关闭本软件
 
 ### 在你的计算机/Mac或者需要作为服务器的设备上
 
