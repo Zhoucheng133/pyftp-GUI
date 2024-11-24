@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  screen_retriever_windows
+  screen_retriever
   window_manager
 )
 

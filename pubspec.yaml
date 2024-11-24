@@ -16,7 +16,7 @@ dependencies:
   google_fonts: ^6.2.1
   process_run: ^0.14.2
   shared_preferences: ^2.2.3
-  window_manager: ^0.4.3
+  window_manager: ^0.3.8
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -37,7 +39,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         textTheme: GoogleFonts.notoSansScTextTheme(),
         splashColor: Colors.transparent,
       ),
@@ -84,9 +86,8 @@ class _ContentState extends State<Content> with WindowListener {
   void onWindowClose() async {
     bool isPreventClose = await windowManager.isPreventClose();
     if (isPreventClose) {
-      if(running && context.mounted){
+      if(running){
         showDialog(
-          // ignore: use_build_context_synchronously
           context: context, 
           builder: (BuildContext context)=>AlertDialog(
             title: const Text('服务在运行中'),
