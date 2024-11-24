@@ -55,6 +55,7 @@ pyftpdlib的GUI程序
 ### v1.2.7 (2024/11/24)
 - 支持手动修改端口号
 - 精简了服务代码
+- 升级了Flutter版本
 
 <details>
 <summary>过往的版本</summary>
