@@ -1,9 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pyftp_gui/funcs/thread.dart';
@@ -85,8 +84,9 @@ class _ContentState extends State<Content> with WindowListener {
   void onWindowClose() async {
     bool isPreventClose = await windowManager.isPreventClose();
     if (isPreventClose) {
-      if(running){
+      if(running && context.mounted){
         showDialog(
+          // ignore: use_build_context_synchronously
           context: context, 
           builder: (BuildContext context)=>AlertDialog(
             title: const Text('服务在运行中'),
@@ -302,16 +302,16 @@ class _ContentState extends State<Content> with WindowListener {
             child: Row(
               children: [
                 Expanded(child: DragToMoveArea(child: Container(),)),
-                WindowCaptionButton.minimize(
+                Platform.isWindows ? WindowCaptionButton.minimize(
                   onPressed: (){
                     windowManager.minimize();
                   },
-                ),
-                WindowCaptionButton.close(
+                ) : Container(),
+                Platform.isWindows ? WindowCaptionButton.close(
                   onPressed: (){
                     windowManager.close();
                   },
-                )
+                ) : Container()
               ],
             ),
           ),
@@ -338,7 +338,7 @@ class _ContentState extends State<Content> with WindowListener {
                         decoration: InputDecoration(
                           isCollapsed: true,
                           hintText: "选取分享的目录",
-                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
+                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           )
@@ -375,10 +375,13 @@ class _ContentState extends State<Content> with WindowListener {
                         controller: port,
                         autocorrect: false,
                         enableSuggestions: false,
-                        enabled: false,
+                        enabled: !running,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         decoration: InputDecoration(
                           isCollapsed: true,
-                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
+                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           )
