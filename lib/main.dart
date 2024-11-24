@@ -101,7 +101,8 @@ class _ContentState extends State<Content> with WindowListener {
           )
         );
       }else{
-        await windowManager.destroy();
+        await windowManager.setPreventClose(false);
+        await windowManager.close();
       }
     }
   }
