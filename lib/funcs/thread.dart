@@ -1,37 +1,30 @@
 import 'dart:io';
 
+import 'package:process_run/process_run.dart';
+
 class MainServer {
-  Process? _process;
-  int? pid;
-  int? pythonPid;
+
+  late Shell shell;
 
   void runCmd(String sharePath, String port, bool enableWrite, bool useLogin, String username, String password) async {
+    shell=Shell();
     var cmd = Platform.isWindows ? 'python' : 'python3';
-    var args = ['-m', 'pyftpdlib', '-p', port, '-d', sharePath];
-    if (enableWrite) {
-      args.add('-w');
+    sharePath=sharePath.replaceAll('\\', '/');
+    cmd+=' -m pyftpdlib -p $port -d "$sharePath"';
+    if(enableWrite){
+      cmd+=' -w';
     }
-    if (useLogin) {
-      args.add('-u');
-      args.add(username);
-      args.add('-P');
-      args.add(password);
+    if(useLogin){
+      cmd+=' -u $username -P $password';
     }
-
-
     try {
-      _process = await Process.start(cmd, args, runInShell: false, mode: ProcessStartMode.detached);
-      pid = _process?.pid;
-    } catch (_) {
-    }
+      await shell.run(cmd);
+    } on ShellException catch (_) {}
   }
 
-  void stopCmd() {
-    if (_process != null) {
-      try {
-        _process?.kill();
-      } catch (_) {}
-    } else {
-    }
+  void stopCmd(){
+    try {
+      shell.kill();
+    } catch (_) {}
   }
 }
