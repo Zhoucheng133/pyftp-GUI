@@ -23,7 +23,7 @@ class MainServer {
     shell=Shell();
     final sharePath=m.sharePath.value.replaceAll('\\', '/');
     final pythonPath=m.python.value.replaceAll('\\', '/');
-    var cmd = pythonPath;
+    var cmd = '"$pythonPath"';
     cmd+=' -m pyftpdlib -p ${m.sharePort.value} -d "$sharePath"';
     if(m.enableWrite.value){
       cmd+=' -w';
