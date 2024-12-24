@@ -410,16 +410,18 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
                     ),
                   ),
                   const SizedBox(width: 10,),
-                  FilledButton(
-                    onPressed: () async {
-                      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-                      if(selectedDirectory!=null){
-                        setState(() {
-                          sharePath.text=selectedDirectory;
-                        });
-                      }
-                    }, 
-                    child: const Text('选择')
+                  Obx(()=>
+                    FilledButton(
+                      onPressed: m.running.value ? null : () async {
+                        String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+                        if(selectedDirectory!=null){
+                          setState(() {
+                            sharePath.text=selectedDirectory;
+                          });
+                        }
+                      }, 
+                      child: const Text('选择')
+                    )
                   )
                 ],
               ),
@@ -432,29 +434,32 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
               Row(
                 children: [
                   Expanded(
-                    child: TextField(
-                      controller: sharePort,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Color.fromARGB(255, 144, 74, 66), width: 1.0),
-                          borderRadius: BorderRadius.circular(10)
+                    child: Obx(()=>
+                      TextField(
+                        enabled: !m.running.value,
+                        controller: sharePort,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Color.fromARGB(255, 144, 74, 66), width: 1.0),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Color.fromARGB(255, 144, 74, 66), width: 2.0),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          isCollapsed: true,
+                          contentPadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10)
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Color.fromARGB(255, 144, 74, 66), width: 2.0),
-                          borderRadius: BorderRadius.circular(10)
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        style: const TextStyle(
+                          fontSize: 14,
                         ),
-                        isCollapsed: true,
-                        contentPadding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10)
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                       ),
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                    ),
+                    )
                   ),
                 ],
               ),
@@ -467,38 +472,45 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Checkbox(
-                        splashRadius: 0,
-                        value: enableWrite, 
-                        onChanged: (val){
-                          if(val!=null){
-                            setState(() {
-                              enableWrite=val;
-                            });
+                  Obx(()=>
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          splashRadius: 0,
+                          value: enableWrite, 
+                          onChanged: m.running.value ? null : (val){
+                            if(val!=null){
+                              setState(() {
+                                enableWrite=val;
+                              });
+                            }
                           }
-                        }
-                      ),
-                      const SizedBox(width: 5,),
-                      GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            enableWrite=!enableWrite;
-                          });
-                        },
-                        child: const MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: Text('允许写入')
+                        ),
+                        const SizedBox(width: 5,),
+                        GestureDetector(
+                          onTap: (){
+                            if(m.running.value){
+                              return;
+                            }
+                            setState(() {
+                              enableWrite=!enableWrite;
+                            });
+                          },
+                          child: const MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: Text('允许写入')
+                          )
                         )
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                   Expanded(child: Container()),
-                  FilledButton(
-                    onPressed: ()=>auth(context), 
-                    child: const Text('用户设置')
+                  Obx(()=>
+                    FilledButton(
+                      onPressed: m.running.value ? null : ()=>auth(context), 
+                      child: const Text('用户设置')
+                    )
                   )
                 ],
               ),
