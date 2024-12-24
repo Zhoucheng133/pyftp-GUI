@@ -8,7 +8,7 @@
 PRODUCT_NAME = pyftp GUI
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.zhouc.pyftpGui
+PRODUCT_BUNDLE_IDENTIFIER = zhouc.pyftpGui
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2024 zhouc. All rights reserved.
