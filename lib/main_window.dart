@@ -27,7 +27,6 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
   @override
   void initState() {
     super.initState();
-    getAddress();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initPython();
     });
@@ -63,7 +62,6 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
   }
 
   Future<void> getAddress() async {
-    prefs = await SharedPreferences.getInstance();
     await windowManager.setPreventClose(true);
     final String? path=prefs.getString("sharePath");
     if(path!=null){
@@ -156,6 +154,7 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
 
   Future<void> initPython() async {
     prefs = await SharedPreferences.getInstance();
+    getAddress();
     String? python=prefs.getString('python');
     if(python!=null){
       m.python.value=python;
