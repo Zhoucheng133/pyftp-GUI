@@ -21,8 +21,8 @@ class MainWindow extends StatefulWidget {
 class _MainWindowState extends State<MainWindow> with WindowListener {
 
   MainVar m=Get.put(MainVar());
-  late final SharedPreferences prefs;
   MainServer server=MainServer();
+  late final SharedPreferences prefs;
 
   @override
   void initState() {
@@ -155,6 +155,7 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
   }
 
   Future<void> initPython() async {
+    prefs = await SharedPreferences.getInstance();
     String? python=prefs.getString('python');
     if(python!=null){
       m.python.value=python;
@@ -517,7 +518,7 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
                       child: Switch(
                         splashRadius: 0,
                         value: m.running.value, 
-                        onChanged: (val){
+                        onChanged: (val) async {
                           if(val){
                             prefs.setString('sharePath', sharePath.text);
                             prefs.setString('sharePort', sharePort.text);
@@ -527,7 +528,9 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
                             m.useAuth.value=useAuth;
                             m.username.value=username.text;
                             m.password.value=password.text;
-                            server.runCmd(context);
+                            if(context.mounted){
+                              server.runCmd(context);
+                            }
                           }else{
                             server.stopCmd();
                           }
