@@ -35,8 +35,35 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
   }
 
   String address='';
+  
+  @override
+  void onWindowClose() async {
+    bool isPreventClose = await windowManager.isPreventClose();
+    if (isPreventClose) {
+      if(m.running.value){
+        showDialog(
+          // ignore: use_build_context_synchronously
+          context: context, 
+          builder: (BuildContext context)=>AlertDialog(
+            title: const Text('服务在运行中'),
+            content: const Text('你需要先关闭服务才能退出'),
+            actions: [
+              FilledButton(
+                onPressed: ()=>Navigator.pop(context), 
+                child: const Text('好的')
+              )
+            ],
+          )
+        );
+      }else{
+        await windowManager.setPreventClose(false);
+        await windowManager.close();
+      }
+    }
+  }
 
   Future<void> getAddress() async {
+    await windowManager.setPreventClose(true);
     final interfaces = await NetworkInterface.list();
     for (final interface in interfaces) {
       final addresses = interface.addresses;
