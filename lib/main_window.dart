@@ -63,7 +63,18 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
   }
 
   Future<void> getAddress() async {
+    prefs = await SharedPreferences.getInstance();
     await windowManager.setPreventClose(true);
+    final String? path=prefs.getString("sharePath");
+    if(path!=null){
+      sharePath.text=path;
+    }
+    final String? port=prefs.getString("sharePort");
+    if(port!=null){
+      sharePort.text=port;
+    }else{
+      sharePort.text="2121";
+    }
     final interfaces = await NetworkInterface.list();
     for (final interface in interfaces) {
       final addresses = interface.addresses;
@@ -144,13 +155,15 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
   }
 
   Future<void> initPython() async {
-    prefs = await SharedPreferences.getInstance();
-    sharePort.text="2121";
-    String? python=whichSync(Platform.isWindows ? 'python' : 'python3');
+    String? python=prefs.getString('python');
+    if(python!=null){
+      m.python.value=python;
+      return;
+    }
+    python=whichSync(Platform.isWindows ? 'python' : 'python3');
     if(python!=null){
       m.python.value=python;
     }else{
-      
       if(context.mounted){
         showDialog(
           // ignore: use_build_context_synchronously
@@ -506,6 +519,8 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
                         value: m.running.value, 
                         onChanged: (val){
                           if(val){
+                            prefs.setString('sharePath', sharePath.text);
+                            prefs.setString('sharePort', sharePort.text);
                             m.sharePath.value=sharePath.text;
                             m.sharePort.value=sharePort.text;
                             m.enableWrite.value=enableWrite;
