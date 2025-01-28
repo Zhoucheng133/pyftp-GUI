@@ -531,6 +531,26 @@ class _MainWindowState extends State<MainWindow> with WindowListener {
                         value: m.running.value, 
                         onChanged: (val) async {
                           if(val){
+                            if(!(await server.portCheck(sharePort.text))){
+                              if(context.mounted){
+                                showDialog(
+                                  context: context, 
+                                  builder: (context)=>AlertDialog(
+                                    title: const Text('启动失败'),
+                                    content: const Text('端口冲突，你需要更换端口号'),
+                                    actions: [
+                                      FilledButton(
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                        }, 
+                                        child: const Text('好的')
+                                      )
+                                    ],
+                                  )
+                                );
+                              }
+                              return;
+                            }
                             prefs.setString('sharePath', sharePath.text);
                             prefs.setString('sharePort', sharePort.text);
                             m.sharePath.value=sharePath.text;

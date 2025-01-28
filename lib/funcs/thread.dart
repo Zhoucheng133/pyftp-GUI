@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:process_run/process_run.dart';
@@ -8,6 +10,17 @@ class MainServer {
 
   late Shell shell;
   final MainVar m=Get.put(MainVar());
+
+  Future<bool> portCheck(String port) async {
+    try {
+      int portConvert=int.parse(port);
+      final server = await ServerSocket.bind("0.0.0.0", portConvert);
+      await server.close();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
   Future<void> runCmd(BuildContext context) async {
     if(m.sharePath.value.isEmpty){
