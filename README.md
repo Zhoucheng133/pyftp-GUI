@@ -10,7 +10,7 @@ pyftpdlib的GUI程序
 
 ## 截图
 
-![截图](assets/demo.png)
+<img src="assets/demo.png" height=400 />
 
 ## 使用方法
 
